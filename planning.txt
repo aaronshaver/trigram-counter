@@ -1,0 +1,137 @@
+These are simply my notes I wrote down before writing any code. I'd usually do
+this on a whiteboard, and be much less verbose/stream of consciousness, but
+this is for maximum communication and revealing my thought process.
+
+
+-I've been reading Clean Architecture lat: 0) Python is often more suited for
+straightfoward, smaller projects like this, Java can be heavy to set up,uely
+and it has got me thinking I could do a plug-able dependency injection for the
+phrase counter: the main processing function could have a phrase counter
+passed in that inherits from a base class so I could try different methods (my
+own "naive" algorithm, the NLTK library, a regex engine, etc.)
+
+...
+
+-could do in Java or Python
+
+-leaning Python because: 0) Python is often more suited for straightfoward,
+smaller projects like this, Java can be heavy to set up, 1) problem statement
+mentions it among preferred languages if I'm choosing), 2) I may want to
+parallelize multiple files and while I've used CompletableFutures in Java this
+year, I'm not as comfortable with it as asyncio
+
+...
+
+-support ingesting file paths
+-detect and report bad paths
+
+...
+
+-with "runs as fast as possible" criterion, might want to use asyncio to
+report results as they come in (e.g. if args are file1.txt and file2.txt and
+file1.txt is huge and file2.txt is small, we could potentially report out 2's
+results first while waiting on 1 as the problem statement doesn't say if files
+should be done in order)
+
+-nope, this doesn't matter as I found out top 100 phrases are across all
+inputs; however, we may still be able to leverage asyncio when reading files
+in
+
+...
+
+-support stdin
+
+...
+
+-probably use dict to store the phrase/frequency pairs
+
+-first replace punctuation substrings with empty spaces
+
+-may need to do a second pass to replace multiple spaces with single? (depends
+on how our phrase counter will work; maybe it just ignores whitespace)
+
+-another pass to lowercase everything
+
+...
+
+-naive approach would be to use a 3-word-wide cursor and iterate from
+beginning to EOF on a list of words after splitting on whitespace. seems like
+this would be O(n)?
+
+-research to see if there's a better approach to get sub-O(n) times; I'm
+guessing this would involve regex, as there may be fancy lazy evaluation or
+other speed ups built in to that. But need to be careful to NOT match
+substrings, only whole word phrases.
+
+-thinking I should probably implement the naive approach first just to get
+something down and measure its timing, then iterate/refactor later
+
+-researched and found a library, NLTK, that I could use to find "trigram"
+(3-word) counts
+
+-make sure this works on the Python 3.7 installed on my machine as their site
+says 3.6
+
+-if I end up using this: be sure it isn't grabbing ALL three-word
+permuatations in the list/string regardless of where those words fall. We want
+words that are contiguous with each other in the original strings/files.
+
+...
+
+-it seems default Python regex does not support overlapping substrings? (like
+"AAA" occurring 3 times in string "BAAAAAB"), but luckily I don't think we
+need that as the problem, from its examples, appears to be going for
+whitespace-separated whole words not every substring permutation
+possible.
+
+-confirmed with "customer": do NOT need to worry about substring matching
+within words
+
+-it may still be worth trying RegEx if it could be faster than the NLTK
+library; not sure if we can use native "re" regex or have to do 3rd party,
+obviously would prefer to have smallest number of external dependencies
+possible
+
+...
+
+-use a simple timer at beginning and end of both phrase-counter function (to
+measure raw counting speed) and entire program (to measure any speed up with
+parallel file processing)
+
+-will use a TDD approach since (aside from asyncio) it's all just simple
+strings and files, and it'll let us gradually build up functionality
+    -empty file test
+    -has words but less than 3, so report that instead of a count
+    -bad file path, report it
+    -handle multiple files
+    -handle simplest case (one file with exactly 3 words)
+    -handle next simplest case (4 words, therefore 2 phrases and 2 counts)
+    -http://www.gutenberg.org/cache/epub/2009/pg2009.txt for a basic large file
+    test
+    -etc.
+
+...
+
+-got additional info: 100 words is across all inputs (stdin OR files -- need
+to check if it's possible to do both stdin and files at once, offhand I don't
+think this is possible)
+
+...
+
+-files don't need to be read in serially (seems like a clue ;-))
+
+...
+
+-edge case but: want to make sure the ends of each file don't get blended
+together. for example if file1 ends in "these words" and file2 begins with
+"other stuff", don't want to include "these words other" and "words other
+stuff" as hits. granted these often wouldn't make the top 100 in sufficiently
+large data sets, so again... edge case, but still.
+
+...
+
+-would be fun to implement "only one of the three words can be a stop word" to
+get more meaningful phrases
+
+-would be really fun to combine with a Markov chain generator to make new
+works in the style of the originals
