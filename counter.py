@@ -1,14 +1,17 @@
 import re
-from counter_config import GRAM_SIZE, SEPARATOR
+from counter_config import GRAM_SIZE, SEPARATOR, TOP_N_PHRASES
 
 
 def print_counts(counts):
     sorted_counts = sort_counts(counts)
 
     output_list = []
+    i = 0
     for key, value in sorted_counts:
-        next_count = '{0} - {1}'.format(value, key)
-        output_list.append(next_count)
+        if i < TOP_N_PHRASES:
+            next_count = '{0} - {1}'.format(value, key)
+            output_list.append(next_count)
+            i += 1
 
     final_output = ', '.join(output_list)
 
