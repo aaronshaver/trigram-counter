@@ -2,20 +2,24 @@
 
 Counts three-word phrases across STDIN or multiple text files
 
-## Usage
-
-### Requirements
+## Requirements
 
 Python 3.x installed
+
+## Usage
 
 ### Run the tests
 
     python -m unittest discover
 
-### Run the app
+### Get input from STDIN
 
-...
+    cat file.txt | python counter.py
 
+### Get input from files
+
+    python counter.py file1.txt file2.txt
+    
 ## Design decisions 
 
 Natural language processing can get complicated and I made some simplifying assumptions, such as:
