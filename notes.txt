@@ -1,8 +1,21 @@
-These are simply my notes I wrote down mostly before writing any code. I'd usually do
-this on a whiteboard, and be much less verbose/stream of consciousness, but
-this is for maximum communication and revealing my thought process.
+Thinking-out-loud notes, of possible interest
 
 ...
+
+Test input is Origin + Republic + Moby + Federalist + Leviathan (approx. 6.2 million bytes)
+
+Before attempting any optimization: 1541 ms
+
+(in each case, I ran the command at least 10 times and used the fastest execution time seen)
+
+...
+
+It was interesting to run into a decoding error with the Moby Dick text after a couple earlier
+books were fine. Fixed it with an opening hook.
+
+Even later thinking: it's surprisingly fast already even without any optimization: it can
+do the originally suggested Origin of Species plus Moby Dick plus The Republic - all three
+are just under 3 MB combined - in about 1.25 seconds on a single 3.20 GHz core.
 
 Later thinking after getting started:
 

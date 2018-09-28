@@ -1,7 +1,9 @@
 import re
 from counter_config import GRAM_SIZE, SEPARATOR, TOP_N_PHRASES
 import reader
+from datetime import datetime
 
+startTime = datetime.now()
 
 def print_counts(counts):
     sorted_counts = sort_counts(counts)
@@ -56,3 +58,4 @@ def count(text):
 
 if __name__ == "__main__":
     main()
+    print("\nExecution time: " + str(datetime.now() - startTime))

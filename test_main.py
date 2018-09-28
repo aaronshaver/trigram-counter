@@ -73,3 +73,16 @@ class Case(unittest.TestCase):
         self.assertTrue("here and there" in output)
         self.assertEqual(output["here and there"], 1)
 
+    @unittest.skip("Set to ignore because this takes upwards of 5 minutes to run")
+    def test_extremely_large_input(self):
+        test_input = ""
+
+        # This will produce a string the size of just over 54 copies of Origin of Species
+        total_occurrences = 5000000
+
+        for i in range(total_occurrences):
+            test_input += "big text here "
+
+        output = counter.count([test_input])
+        self.assertTrue("big text here" in output)
+        self.assertEqual(output["big text here"], total_occurrences)
