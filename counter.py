@@ -37,13 +37,13 @@ def count(texts):
     text = texts[0]
     text = text.lower()
     stripped_text = re.sub(r'[^a-z0-9 ]+', SEPARATOR, text)
-    text_split = stripped_text.split(SEPARATOR)
+    split_text = stripped_text.split()
 
-    if len(text_split) < GRAM_SIZE:
+    if len(split_text) < GRAM_SIZE:
         return output
     else:
-        for i in range(len(text_split)):
-            current_phrase = text_split[i:i + GRAM_SIZE]
+        for i in range(len(split_text)):
+            current_phrase = split_text[i:i + GRAM_SIZE]
             if len(current_phrase) < GRAM_SIZE:
                 break  # avoid testing tail end of text if tail < gram size
 
