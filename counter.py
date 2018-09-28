@@ -33,7 +33,7 @@ def count(texts):
     output = {}
     text = texts[0]
     text = text.lower()
-    stripped_text = re.sub(r'[^a-z ]+', SEPARATOR, text)
+    stripped_text = re.sub(r'[^a-z0-9 ]+', SEPARATOR, text)
     text_split = stripped_text.split(SEPARATOR)
 
     if len(text_split) < GRAM_SIZE:
