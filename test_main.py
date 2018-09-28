@@ -17,6 +17,12 @@ class Case(unittest.TestCase):
         self.assertTrue("super simple test" in output)
         self.assertEqual(output["super simple test"], 1)
 
+    def test_super_simple_mixed_case(self):
+        test_input = "super simple test SUPER SIMPLE TEST"
+        output = main.count([test_input])
+        self.assertTrue("super simple test" in output)
+        self.assertEqual(output["super simple test"], 2)
+
     def test_two_trigrams(self):
         test_input = "this has two trigrams"
         output = main.count([test_input])
@@ -40,3 +46,30 @@ class Case(unittest.TestCase):
         # negative tests to make sure our gram "window" isn't sliding too far
         self.assertTrue("trigrams now" not in output)
         self.assertTrue("now" not in output)
+
+    def test_simple_repeated_trigram(self):
+        test_input = "apples are tasty and also apples are tasty"
+        output = main.count([test_input])
+        self.assertTrue("apples are tasty" in output)
+        self.assertEqual(output["apples are tasty"], 2)
+
+    def test_strip_special_chars(self):
+        test_input = r"super,simple.test:a;few!more&words\"here'and?there"
+        output = main.count([test_input])
+        self.assertTrue("super simple test" in output)
+        self.assertEqual(output["super simple test"], 1)
+        self.assertTrue("simple test a" in output)
+        self.assertEqual(output["simple test a"], 1)
+        self.assertTrue("test a few" in output)
+        self.assertEqual(output["test a few"], 1)
+        self.assertTrue("a few more" in output)
+        self.assertEqual(output["a few more"], 1)
+        self.assertTrue("few more words" in output)
+        self.assertEqual(output["few more words"], 1)
+        self.assertTrue("more words here" in output)
+        self.assertEqual(output["more words here"], 1)
+        self.assertTrue("words here and" in output)
+        self.assertEqual(output["words here and"], 1)
+        self.assertTrue("here and there" in output)
+        self.assertEqual(output["here and there"], 1)
+

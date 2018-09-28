@@ -1,3 +1,5 @@
+import re
+
 GRAM_SIZE = 3  # for future if customer wants more or less than 3 word phrases
 SPACE_CHAR = ' '
 
@@ -9,13 +11,17 @@ def main():
 
 def count(texts):
     output = {}
-    if len(texts[0].split()) < GRAM_SIZE:
+    text = texts[0]
+    text = text.lower()
+    stripped_text = re.sub(r'[^a-z ]+', ' ', text)
+    text_split = stripped_text.split()
+
+    if len(text_split) < GRAM_SIZE:
         return output
     else:
-        texts_split = texts[0].split()
 
-        for i in range(len(texts_split)):
-            current_phrase = texts_split[i:i + GRAM_SIZE]
+        for i in range(len(text_split)):
+            current_phrase = text_split[i:i + GRAM_SIZE]
             if len(current_phrase) < GRAM_SIZE:
                 break  # avoid testing tail end of text if < gram size
 
