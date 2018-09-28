@@ -1,7 +1,5 @@
 import re
-
-GRAM_SIZE = 3  # for future if customer wants more or less than 3 word phrases
-SPACE_CHAR = ' '
+from counter_config import GRAM_SIZE, SEPARATOR
 
 
 def main():
@@ -13,19 +11,18 @@ def count(texts):
     output = {}
     text = texts[0]
     text = text.lower()
-    stripped_text = re.sub(r'[^a-z ]+', ' ', text)
-    text_split = stripped_text.split()
+    stripped_text = re.sub(r'[^a-z ]+', SEPARATOR, text)
+    text_split = stripped_text.split(SEPARATOR)
 
     if len(text_split) < GRAM_SIZE:
         return output
     else:
-
         for i in range(len(text_split)):
             current_phrase = text_split[i:i + GRAM_SIZE]
             if len(current_phrase) < GRAM_SIZE:
-                break  # avoid testing tail end of text if < gram size
+                break  # avoid testing tail end of text if tail < gram size
 
-            joined_phrase = SPACE_CHAR.join(current_phrase)
+            joined_phrase = SEPARATOR.join(current_phrase)
             if joined_phrase not in output:
                 output[joined_phrase] = 1
             else:
