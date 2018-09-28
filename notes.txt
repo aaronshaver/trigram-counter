@@ -4,9 +4,10 @@ Thinking-out-loud notes, of possible interest
 
 Test input is Origin + Republic + Moby + Federalist + Leviathan (approx. 6.2 million bytes)
 
-Before attempting any optimization: 1541 ms
+Before attempting any optimization: 1551
 
-(in each case, I ran the command at least 10 times and used the fastest execution time seen)
+I ran the script 10 times and got an average time.
+Times are in milliseconds, rounded to the nearest millisecond.
 
 ...
 

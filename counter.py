@@ -5,6 +5,7 @@ from datetime import datetime
 
 startTime = datetime.now()
 
+
 def print_counts(counts):
     sorted_counts = sort_counts(counts)
 
@@ -58,4 +59,9 @@ def count(text):
 
 if __name__ == "__main__":
     main()
-    print("\nExecution time: " + str(datetime.now() - startTime))
+
+    timing_data = str(datetime.now() - startTime)
+    with open('performance.txt', 'a') as f:
+        f.write(timing_data + '\n')
+        # caveat from reading SO: datetime.now() may have limited resolution,
+        # be off by several ms so this isn't perfect
