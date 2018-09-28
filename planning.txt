@@ -3,6 +3,21 @@ this on a whiteboard, and be much less verbose/stream of consciousness, but
 this is for maximum communication and revealing my thought process.
 
 
+-Thinking about speeding up large files: because of the Global Interpreter
+Lock, doing multiple threads won't help. But there's the multiprocessing
+library which gets around
+this: https://docs.python.org/2/library/multiprocessing.html
+
+as long as
+it's threadsafe (making sure don't lose data with when working on and
+merging multiple dictionaries), we could split large texts up at the 1 KB
+mark or something. You'd have to make sure to account for "edges" of the
+split up parts:
+"this is a sample text file"
+if you split on "this is a" and "sample text file" you'd want to make sure
+you get the "is a sample" and "a sample text" trigrams, but in theory this
+idea should work
+
 -I've been reading Clean Architecture lat: 0) Python is often more suited for
 straightfoward, smaller projects like this, Java can be heavy to set up,uely
 and it has got me thinking I could do a plug-able dependency injection for the
