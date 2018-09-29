@@ -5,7 +5,6 @@ import sys
 def read():
     lines = []
 
-    # TODO: just append to a string so we don't have to convert back and forth?????
     try:
         with fileinput.input(openhook=fileinput.hook_encoded("utf-8")) as f:
             for line in f:

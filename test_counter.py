@@ -1,6 +1,11 @@
 import unittest
 import counter
 
+# NOTE: besides these, I did testing on the commandline with large text files.
+# I didn't bother to include those tests here for a few reasons, including
+# speed and not being 100% sure what the true trigram counts were for the
+# texts. I didn't want to assume assertion values I couldn't prove.
+
 
 class Case(unittest.TestCase):
 

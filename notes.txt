@@ -4,7 +4,8 @@ Thinking-out-loud notes, of possible interest
 
 Test input is Origin + Republic + Moby + Federalist + Leviathan (approx. 6.2 million bytes)
 
-Before attempting any optimization: 1551
+1551: before attempting any optimization
+9300: tried doing "only string appending in file reader" instead of "list appending then list joining later"
 
 I ran the script 10 times and got an average time.
 Times are in milliseconds, rounded to the nearest millisecond.
