@@ -1,6 +1,6 @@
 # trigram-counter
 
-Counts three-word phrases across STDIN or multiple text files
+This script counts three-word phrases (trigrams) across STDIN or multiple text files, and then displays the top 100 phrases to the console.
 
 ## Requirements
 
