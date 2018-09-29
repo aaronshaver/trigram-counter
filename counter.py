@@ -34,26 +34,30 @@ def main():
 
 
 def count(text):
+    # 2% performance improvement; see notes.txt
+    local_separator = SEPARATOR
+    local_gram_size = GRAM_SIZE
+
     output = {}
 
-    text = SEPARATOR.join(text)
+    text = local_separator.join(text)
     text = text.lower()
-    stripped_text = re.sub(r'[^a-z0-9 ]+', SEPARATOR, text)
+    stripped_text = re.sub(r'[^a-z0-9 ]+', local_separator, text)
     split_text = stripped_text.split()
 
-    if len(split_text) < GRAM_SIZE:
+    if len(split_text) < local_gram_size:
         return output
     else:
         for i in range(len(split_text)):
-            current_phrase = split_text[i:i + GRAM_SIZE]
-            if len(current_phrase) < GRAM_SIZE:
+            current_phrase = split_text[i:i + local_gram_size]
+            if len(current_phrase) < local_gram_size:
                 break  # avoid testing tail end of text if tail < gram size
 
-            joined_phrase = SEPARATOR.join(current_phrase)
-            if joined_phrase not in output:
-                output[joined_phrase] = 1
-            else:
+            joined_phrase = local_separator.join(current_phrase)
+            if joined_phrase in output:
                 output[joined_phrase] += 1
+            else:
+                output[joined_phrase] = 1
     return output
 
 

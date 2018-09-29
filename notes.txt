@@ -2,13 +2,33 @@ Thinking-out-loud notes, of possible interest
 
 ...
 
-Test input is Origin + Republic + Moby + Federalist + Leviathan (approx. 6.2 million bytes)
+PERFORMANCE TUNING ATTEMPTS:
 
-1551: before attempting any optimization
-9300: tried doing "only string appending in file reader" instead of "list appending then list joining later"
-
-I ran the script 10 times and got an average time.
+Test input was Origin + Republic + Moby + Federalist + Leviathan (approx. 6.2 million bytes)
+I ran the script 20 times and got an average time.
 Times are in milliseconds, rounded to the nearest millisecond.
+
+Initial time was 1604 ms
+
+1. I tried doing "only string appending in file reader" instead of "list appending then list joining later" and found
+the execution time went way up to about 9300 ms! Apparently string appends are slow and list joins are fast?
+
+2. Very interesting: the script was consistently very slightly faster (15 ms) when I *kept* line.strip('\n') in the file
+reader! I would guess this is because the total size of the input is reduced by 100K chars or so (I think this was the
+number of line ending in the original data) so when it gets to the .lower() and .sub() functions later on, it has fewer
+overall characters to deal with? This was surprising to me because you'd think leaving out a function call would speed
+things up.
+
+3. Without printing and assembling our output, we can get the execution time down to 1383 ms. Of course that renders
+the script useless. But it's interesting to note 14% of our execution time is the output part.
+
+4. I tried switching the conditionals when the script checks for the existence of a phrase key in the dictionary,
+thinking that it may skip a branch of the code more quickly if I had it do the more common operation first. But this
+made no meaningful difference.
+
+5. WHOA! I skimmed through https://wiki.python.org/moin/PythonSpeed and decided to try using local variables inside the
+expensive for loop inside our main count function rather than global ones. I got a 2% performance improvement, 33 ms. I
+double checked with an additional 20 runs  just to be sure, and yep after 40 runs the improvement is still there!
 
 ...
 
@@ -17,7 +37,7 @@ books were fine. Fixed it with an opening hook.
 
 Even later thinking: it's surprisingly fast already even without any optimization: it can
 do the originally suggested Origin of Species plus Moby Dick plus The Republic - all three
-are just under 3 MB combined - in about 1.25 seconds on a single 3.20 GHz core.
+are just under 3 MB combined - in about 1.25 seconds (from stopwatch timing) on a single 3.20 GHz core.
 
 Later thinking after getting started:
 
