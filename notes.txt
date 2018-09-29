@@ -30,6 +30,10 @@ made no meaningful difference.
 expensive for loop inside our main count function rather than global ones. I got a 2% performance improvement, 33 ms. I
 double checked with an additional 20 runs  just to be sure, and yep after 40 runs the improvement is still there!
 
+6. I tried removing the "if len(split_text) < local_gram_size:" block thinking that having to check this every time when
+most of our cases aren't tiny files doesn't make. It made no difference, and of course this makes sense because it is
+not inside our expensive for loop!
+
 ...
 
 It was interesting to run into a decoding error with the Moby Dick text after a couple earlier

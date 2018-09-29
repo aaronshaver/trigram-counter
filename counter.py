@@ -18,19 +18,12 @@ def print_counts(counts):
             i += 1
 
     final_output = ', '.join(output_list)
-
     print(final_output)
 
 
 def sort_counts(counts):
     # sort by highest count first
     return sorted(counts.items(), key=lambda key_value_pair: key_value_pair[1], reverse=True)
-
-
-def main():
-    input_data = reader.read()
-    counts = count(input_data)
-    print_counts(counts)
 
 
 def count(text):
@@ -40,6 +33,7 @@ def count(text):
 
     output = {}
 
+    # pre-processing like lowercasing everything, removing non-alphanum chars
     text = local_separator.join(text)
     text = text.lower()
     stripped_text = re.sub(r'[^a-z0-9 ]+', local_separator, text)
@@ -49,6 +43,7 @@ def count(text):
         return output
     else:
         for i in range(len(split_text)):
+            # moves a three-word (by default) "window" across the text
             current_phrase = split_text[i:i + local_gram_size]
             if len(current_phrase) < local_gram_size:
                 break  # avoid testing tail end of text if tail < gram size
@@ -59,6 +54,12 @@ def count(text):
             else:
                 output[joined_phrase] = 1
     return output
+
+
+def main():
+    input_data = reader.read()
+    counts = count(input_data)
+    print_counts(counts)
 
 
 if __name__ == "__main__":

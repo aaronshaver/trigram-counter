@@ -1,16 +1,14 @@
 import unittest
 import counter
 
-# NOTE: besides these, I did testing on the commandline with large text files.
-# I didn't bother to include those tests here for a few reasons, including
-# speed and not being 100% sure what the true trigram counts were for the
-# texts. I didn't want to assume assertion values I couldn't prove.
+# NOTE: besides these, I did "integration" testing on the commandline with
+# large text files. I didn't bother to include those tests here for a few
+# reasons, including speed and not being 100% sure what the true trigram
+# counts were for the texts. I didn't want to assume assertion values I
+# couldn't prove.
 
 
 class Case(unittest.TestCase):
-
-    def setup(self):
-        pass
 
     def test_empty_string_should_return_empty_dict(self):
         output = counter.count([""])
@@ -80,6 +78,8 @@ class Case(unittest.TestCase):
 
     @unittest.skip("Set to ignore because this takes upwards of 5 minutes to run")
     def test_extremely_large_input(self):
+        """ This was for doing a convenient in-memory stress test without having to
+            gather real files """
         test_input = ""
 
         # This will produce a string the size of just over 54 copies of Origin of Species
