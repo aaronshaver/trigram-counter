@@ -24,10 +24,7 @@ Please install Python 3.x. I tested the script successfully with Python 3.7.0 on
 
 Natural language processing can get complicated and I made some simplifying assumptions, such as:
 
-1. Words like "Python's" will render as "pythons". You might think simply stripping the
-single quote is logical, but what if we were processing, say, a fantasy novel with character names like "Rah'orth"?
-In that case, the punctuation is meaningful and intended by the author and arguably should be preserved. But on balance 
-users probably will see and care about the more common cases of possessive nouns, etc.
+1. Words like "Python's" will render as "python" "s" (two words).
 
 2. It's up for debate whether you call this a bug or not, but I found that on Windows on Git Bash and in the default
 commandline, the final entry for the command `python counter.py text/Origin.txt` will always be `33 - at the present`.
