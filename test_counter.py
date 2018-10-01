@@ -19,12 +19,14 @@ class Case(unittest.TestCase):
         output = counter.count([test_input])
         self.assertTrue("super simple test" in output)
         self.assertEqual(output["super simple test"], 1)
+        self.assertEqual(len(output.keys()), 1)  # total trigrams expected
 
     def test_super_simple_mixed_case(self):
         test_input = "super simple test SUPER SIMPLE TEST"
         output = counter.count([test_input])
         self.assertTrue("super simple test" in output)
         self.assertEqual(output["super simple test"], 2)
+        self.assertEqual(len(output.keys()), 3)
 
     def test_two_trigrams(self):
         test_input = "this has two trigrams"
@@ -36,6 +38,7 @@ class Case(unittest.TestCase):
         # negative tests to make sure our gram "window" isn't sliding too far
         self.assertTrue("two trigrams" not in output)
         self.assertTrue("trigrams" not in output)
+        self.assertEqual(len(output.keys()), 2)
 
     def test_three_trigrams(self):
         test_input = "this has three trigrams now"
@@ -49,12 +52,14 @@ class Case(unittest.TestCase):
         # negative tests to make sure our gram "window" isn't sliding too far
         self.assertTrue("trigrams now" not in output)
         self.assertTrue("now" not in output)
+        self.assertEqual(len(output.keys()), 3)
 
     def test_simple_repeated_trigram(self):
         test_input = "apples are tasty and also apples are tasty"
         output = counter.count([test_input])
         self.assertTrue("apples are tasty" in output)
         self.assertEqual(output["apples are tasty"], 2)
+        self.assertEqual(len(output.keys()), 5)
 
     def test_strip_special_chars(self):
         test_input = r"super,simple.test:a;few!more&words\"here'and?there"
