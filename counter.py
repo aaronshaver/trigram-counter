@@ -1,6 +1,6 @@
-import multiprocessing
 import re
 from datetime import datetime
+from multiprocessing import Process, Queue
 
 import reader
 from counter_config import GRAM_SIZE, SEPARATOR, TOP_N_PHRASES
@@ -28,62 +28,80 @@ def sort_counts(counts):
     return sorted(counts.items(), key=lambda key_value_pair: key_value_pair[1], reverse=True)
 
 
-def find_grams(text, out_list):
-    ## do work
-    pass
-
-
-def count(text):
+def count_grams(split_text, collector_queue):
     # 2% performance improvement; see notes.txt
     local_separator = SEPARATOR
     local_gram_size = GRAM_SIZE
 
-    processes = 2  # number of processes to use to count the grams
-
-    text_lists = []
-    first_half_index = len(text) // 2  # TODO: fix hardcoded two sub-text divisions
-    text_lists.append(text[:first_half_index])
-    text_lists.append(text[first_half_index:])
-
-    print()
-    print(text_lists[0])
-    print(text_lists[1])
-    print()
-
-    jobs = []
-    for i in range(processes):
-        out_list = list()
-        process = multiprocessing.Process(target=find_grams, args=(text_lists[i], out_list))
-        jobs.append(process)
-
+    print("we're inside the actual counting func]", split_text)
     output = {}
+    for i in range(len(split_text)):
+        # moves a three-word (by default) "window" across the text
+        current_phrase = split_text[i:i + local_gram_size]
+        if len(current_phrase) < local_gram_size:
+            break  # avoid testing tail end of text if tail < gram size
 
-    # pre-processing like lowercasing everything, removing non-alphanum chars
-    text = local_separator.join(text)
+        joined_phrase = local_separator.join(current_phrase)
+        if joined_phrase in output:
+            output[joined_phrase] += 1
+        else:
+            output[joined_phrase] = 1
+
+    collector_queue.put(output)
+
+
+def process_text(text):
+
+    # pre-processing like lowercasing everything, replacing non-alphanum chars
+    text = SEPARATOR.join(text)
     text = text.lower()
-    stripped_text = re.sub(r'[^a-z0-9 ]+', local_separator, text)
+    stripped_text = re.sub(r'[^a-z0-9 ]+', SEPARATOR, text)
     split_text = stripped_text.split()
 
-    if len(split_text) < local_gram_size:
-        return output
+    if len(split_text) < GRAM_SIZE:
+        return {}  # got input so small that we couldn't even find ngrams in it
     else:
-        for i in range(len(split_text)):
-            # moves a three-word (by default) "window" across the text
-            current_phrase = split_text[i:i + local_gram_size]
-            if len(current_phrase) < local_gram_size:
-                break  # avoid testing tail end of text if tail < gram size
+        processes = 2  # number of processes to use to count the ngrams
+        collector_queue = Queue()
 
-            joined_phrase = local_separator.join(current_phrase)
-            if joined_phrase in output:
-                output[joined_phrase] += 1
-            else:
-                output[joined_phrase] = 1
+        text_lists = []
+        first_half_index = len(split_text) // 2  # TODO: fix hardcoded two
+        text_lists.append(split_text[:first_half_index])
+        text_lists.append(split_text[first_half_index:])
+
+        jobs = []
+        for i in range(processes):
+            out_list = list()
+            # We split up the processing of the text into chunks for speed.
+            # The args are the particular sub-section of the text plus an
+            # accumulator as well as the local vars to avoid global var
+            # slowdown.
+            process = Process(target=count_grams, args=(text_lists[i],
+                                                        collector_queue))
+            jobs.append(process)
+
+        outputs = []
+        for j in jobs:
+            j.start()
+            outputs.append(collector_queue.get())
+
+        for j in jobs:
+            j.join()  # forces sync on all jobs being completed
+
+        print()
+        print("outputs....")
+        print(outputs)
+        print()
+
+    # TODO: combine all the separate dictionaries into one
+    output = {'fix me': 1}
+
     return output
 
 
 def main():
     input_data = reader.read()
-    counts = count(input_data)
+    counts = process_text(input_data)
     print_counts(counts)
 
 

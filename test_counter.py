@@ -11,26 +11,26 @@ import counter
 class Case(unittest.TestCase):
 
     def test_empty_string_should_return_empty_dict(self):
-        output = counter.count([""])
+        output = counter.process_text([""])
         self.assertEqual({}, output)
 
     def test_super_simple_three_word_input(self):
         test_input = "super simple test"
-        output = counter.count([test_input])
+        output = counter.process_text([test_input])
         self.assertTrue("super simple test" in output)
         self.assertEqual(output["super simple test"], 1)
         self.assertEqual(len(output.keys()), 1)  # total trigrams expected
 
     def test_super_simple_mixed_case(self):
         test_input = "super simple test SUPER SIMPLE TEST"
-        output = counter.count([test_input])
+        output = counter.process_text([test_input])
         self.assertTrue("super simple test" in output)
         self.assertEqual(output["super simple test"], 2)
         self.assertEqual(len(output.keys()), 3)
 
     def test_two_trigrams(self):
         test_input = "this has two trigrams"
-        output = counter.count([test_input])
+        output = counter.process_text([test_input])
         self.assertTrue("this has two" in output)
         self.assertTrue("has two trigrams" in output)
         self.assertEqual(output["this has two"], 1)
@@ -42,7 +42,7 @@ class Case(unittest.TestCase):
 
     def test_three_trigrams(self):
         test_input = "this has three trigrams now"
-        output = counter.count([test_input])
+        output = counter.process_text([test_input])
         self.assertTrue("this has three" in output)
         self.assertTrue("has three trigrams" in output)
         self.assertTrue("three trigrams now" in output)
@@ -56,14 +56,14 @@ class Case(unittest.TestCase):
 
     def test_simple_repeated_trigram(self):
         test_input = "apples are tasty and also apples are tasty"
-        output = counter.count([test_input])
+        output = counter.process_text([test_input])
         self.assertTrue("apples are tasty" in output)
         self.assertEqual(output["apples are tasty"], 2)
         self.assertEqual(len(output.keys()), 5)
 
     def test_strip_special_chars(self):
         test_input = r"super,simple.test:a;few!more&words\"here'and?there"
-        output = counter.count([test_input])
+        output = counter.process_text([test_input])
         self.assertTrue("super simple test" in output)
         self.assertEqual(output["super simple test"], 1)
         self.assertTrue("simple test a" in output)
@@ -93,6 +93,6 @@ class Case(unittest.TestCase):
         for i in range(total_occurrences):
             test_input += "big text here "
 
-        output = counter.count([test_input])
+        output = counter.process_text([test_input])
         self.assertTrue("big text here" in output)
         self.assertEqual(output["big text here"], total_occurrences)
