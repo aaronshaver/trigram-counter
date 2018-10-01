@@ -1,7 +1,9 @@
+import multiprocessing
 import re
-from counter_config import GRAM_SIZE, SEPARATOR, TOP_N_PHRASES
-import reader
 from datetime import datetime
+
+import reader
+from counter_config import GRAM_SIZE, SEPARATOR, TOP_N_PHRASES
 
 startTime = datetime.now()
 
@@ -26,10 +28,33 @@ def sort_counts(counts):
     return sorted(counts.items(), key=lambda key_value_pair: key_value_pair[1], reverse=True)
 
 
+def find_grams(text, out_list):
+    ## do work
+    pass
+
+
 def count(text):
     # 2% performance improvement; see notes.txt
     local_separator = SEPARATOR
     local_gram_size = GRAM_SIZE
+
+    processes = 2  # number of processes to use to count the grams
+
+    text_lists = []
+    first_half_index = len(text) // 2  # TODO: fix hardcoded two sub-text divisions
+    text_lists.append(text[:first_half_index])
+    text_lists.append(text[first_half_index:])
+
+    print()
+    print(text_lists[0])
+    print(text_lists[1])
+    print()
+
+    jobs = []
+    for i in range(processes):
+        out_list = list()
+        process = multiprocessing.Process(target=find_grams, args=(text_lists[i], out_list))
+        jobs.append(process)
 
     output = {}
 
