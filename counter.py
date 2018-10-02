@@ -33,8 +33,7 @@ def count_grams(split_text, collector_queue):
     local_separator = SEPARATOR
     local_gram_size = GRAM_SIZE
 
-    print("we're inside the actual counting func]", split_text)
-    output = {}
+    counts = {}
     for i in range(len(split_text)):
         # moves a three-word (by default) "window" across the text
         current_phrase = split_text[i:i + local_gram_size]
@@ -42,12 +41,12 @@ def count_grams(split_text, collector_queue):
             break  # avoid testing tail end of text if tail < gram size
 
         joined_phrase = local_separator.join(current_phrase)
-        if joined_phrase in output:
-            output[joined_phrase] += 1
+        if joined_phrase in counts:
+            counts[joined_phrase] += 1
         else:
-            output[joined_phrase] = 1
+            counts[joined_phrase] = 1
 
-    collector_queue.put(output)
+    collector_queue.put(counts)
 
 
 def process_text(text):
@@ -71,7 +70,6 @@ def process_text(text):
 
         jobs = []
         for i in range(processes):
-            out_list = list()
             # We split up the processing of the text into chunks for speed.
             # The args are the particular sub-section of the text plus an
             # accumulator as well as the local vars to avoid global var
@@ -80,21 +78,27 @@ def process_text(text):
                                                         collector_queue))
             jobs.append(process)
 
-        outputs = []
+        combined_output = []
         for j in jobs:
             j.start()
-            outputs.append(collector_queue.get())
+            combined_output.append(collector_queue.get())
 
         for j in jobs:
             j.join()  # forces sync on all jobs being completed
 
-        print()
-        print("outputs....")
-        print(outputs)
-        print()
-
-    # TODO: combine all the separate dictionaries into one
-    output = {'fix me': 1}
+    output = {}
+    for d in combined_output:
+        if output == {}:
+            output = d.copy()
+        else:
+            # So this may be slow and may defeat the whole point of this
+            # multiprocessing speed up; however, I didn't find a better
+            # way of merging dictionaries than this invented one...
+            for key, value in d.items():
+                if key in output:
+                    output[key] = output[key] + value  # add to existing val
+                else:
+                    output[key] = value
 
     return output
 
