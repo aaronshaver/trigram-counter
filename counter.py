@@ -81,9 +81,9 @@ def process_text(text):
         combined_output = []
         for j in jobs:
             j.start()
-            combined_output.append(collector_queue.get())
 
         for j in jobs:
+            combined_output.append(collector_queue.get())
             j.join()  # forces sync on all jobs being completed
 
     output = {}
@@ -94,6 +94,22 @@ def process_text(text):
             # So this may be slow and may defeat the whole point of this
             # multiprocessing speed up; however, I didn't find a better
             # way of merging dictionaries than this invented one...
+            #
+            # Update: yep, it's pretty slow. Here's 4 times with and 4 times
+            # without merging the dictionaries:
+            # 0:00:01.605927
+            # 0:00:01.612612
+            # 0:00:01.650152
+            # 0:00:01.614200
+            # 0:00:01.511553
+            # 0:00:01.518491
+            # 0:00:01.498542
+            # 0:00:01.495551
+            #
+            # The last 4 times are faster than any pre-multiprocessing times
+            # I was getting, the best of those of which were around 1567 ms
+            # But with the dict merge, things slow down to end up being
+            # worse overall
             for key, value in d.items():
                 if key in output:
                     output[key] = output[key] + value  # add to existing val
